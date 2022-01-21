@@ -43,8 +43,6 @@ export default function Home() {
 
             <ScrollView style={styles.content} contentContainerStyle={{ alignItems: 'center' }}>
                 <TaskCard done={true} />
-                <TaskCard />
-                <TaskCard />
             </ScrollView>
 
             <Footer icon={'add'} />
