@@ -18,15 +18,16 @@ export default function Home() {
 
     async function loadTasks() {
         setLoad(true);
-        await api.get('/task/filter/all/11:11:11:11:11:11').then(response => {
-            setTasks(response.data)
-            setLoad(false);
-        });
+        await api.get(`/task/filter/${filter}/11:11:11:11:11:11`)
+            .then(response => {
+                setTasks(response.data)
+                setLoad(false);
+            });
     }
 
     useEffect(() => {
         loadTasks();
-    }, [])
+    }, [filter])
 
     return (
         <View style={styles.container}>
