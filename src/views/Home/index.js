@@ -67,7 +67,7 @@ export default function Home() {
                         :
                         tasks.map(t =>
                         (
-                            <TaskCard done={true} title={t.title} when={when} />
+                            <TaskCard done={true} title={t.title} when={t.when} />
                         ))
                 }
             </ScrollView>
