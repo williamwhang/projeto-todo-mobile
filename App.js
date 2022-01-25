@@ -3,9 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 // console.disableYellowBox = true;
 
 import Home from './src/views/Home';
+import Task from './src/views/Task';
 
 export default function App() {
-  return <Home />
+  return  <Task />
 
 }
 
