@@ -16,6 +16,7 @@ import styles from './styles';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import typeIcons from '../../utils/typeIcons';
+import DateTimeInput from '../../components/DateTimeInput';
 
 export default function Task() {
     const [done, setDone] = useState(false);
@@ -50,6 +51,9 @@ export default function Task() {
                     multiline={true}
                     placeholder="Detalhes das atividades que eu tenho que lembrar..."
                 />
+
+                <DateTimeInput type={'date'} />
+                <DateTimeInput type={'hour'} />
 
                 <View style={styles.inLine}>
                     <View style={styles.inputInLine}>
