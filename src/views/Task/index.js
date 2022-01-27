@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     ScrollView,
@@ -10,6 +10,7 @@ import {
     Switch,
     Alert
 } from 'react-native';
+import * as Network from 'expo-network';
 
 import styles from './styles';
 
@@ -21,14 +22,15 @@ import Footer from '../../components/Footer';
 import typeIcons from '../../utils/typeIcons';
 import DateTimeInput from '../../components/DateTimeInput';
 
-export default function Task({ navigation }) {
+export default function Task({ navigation, idTask }) {
+    const [id, setId] = useState();
     const [done, setDone] = useState(false);
     const [type, setType] = useState();
     const [title, setTitle] = useState();
     const [description, seDescription] = useState();
     const [date, setDate] = useState();
     const [hour, setHour] = useState();
-    const [macaddress, setMacaddress] = useState('11:11:11:11:11:11');
+    const [macaddress, setMacaddress] = useState();
 
     async function New() {
 
@@ -47,6 +49,18 @@ export default function Task({ navigation }) {
         if (!hour)
             return Alert.alert('Escolha uma hora para a tarefa!');
     }
+
+    async function getMacAddress() {
+        await Network.getMacAddressAsync().then(mac => {
+            setMacaddress(mac);
+        });
+    }
+
+    useEffect(() => {
+        if (navigation.state.params)
+            setId(navigation.state.params.idTask)
+        getMacAddress();
+    });
 
     await api.post('/task', {
         macaddress,
@@ -96,15 +110,18 @@ export default function Task({ navigation }) {
                 <DateTimeInput type={'date'} save={setDate} />
                 <DateTimeInput type={'hour'} save={setHour} />
 
-                <View style={styles.inLine}>
-                    <View style={styles.inputInLine}>
-                        <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'} />
-                        <Text style={styles.switchLabel}> Concluído </Text>
+                {
+                    id &&
+                    <View style={styles.inLine}>
+                        <View style={styles.inputInLine}>
+                            <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'} />
+                            <Text style={styles.switchLabel}> Concluído </Text>
+                        </View>
+                        <TouchableOpacity>
+                            <Text style={styles.removeLabel}> EXCLUÍR </Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity>
-                        <Text style={styles.removeLabel}> EXCLUÍR </Text>
-                    </TouchableOpacity>
-                </View>
+                }
 
             </ScrollView>
 

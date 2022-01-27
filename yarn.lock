@@ -2523,6 +2523,11 @@ expo-modules-core@0.6.4:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-network@~4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/expo-network/-/expo-network-4.1.0.tgz#28ef43206e47f3e572e42b7d876eaddcb4f67f5f"
+  integrity sha512-FmiqvGsFKC4g3Fa2rkxcQ6+kS2yUFy/gwI8QgcUrwhVPXg8fkLyq6Vo1tdU9arWZNRQ99SVyW0JwKdmqy/+nQw==
+
 expo-status-bar@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.2.0.tgz#16e73205da563f9536f562e439081e30e318a82e"
