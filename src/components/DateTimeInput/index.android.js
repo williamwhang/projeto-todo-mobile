@@ -9,10 +9,12 @@ import {
 
 import styles from './styles';
 
+import { format } from 'date-fns';
+
 import iconCalendar from '../../assets/calendar.png';
 import iconClock from '../../assets/clock.png';
 
-export default function DateTimeInput({ type }) {
+export default function DateTimeInput({ type, save }) {
     const [dateTime, setDateTime] = useState();
 
     async function selectDataOrHour() {
@@ -23,13 +25,15 @@ export default function DateTimeInput({ type }) {
 
             if (action == DatePickerAndroid.dateSetAction)
                 setDateTime(`${day} - ${month} - ${year}`);
+            save(format(new Date(year, month, day), 'yyyy-MM-dd'));
         } else {
             const { action, hour, minute } = await TimePickerAndroid.open({
                 is24Hour: true
             });
 
             if (action !== TimePickerAndroid.dismissedAction)
-                setDateTime(`${hour}:${minuto}`);
+                setDateTime(`${hour}:${minute}`);
+            save(format(new Date(2021, 01, 26, hour, minute, 0, 0), 'HH:mm:ss'));
         }
     }
 
