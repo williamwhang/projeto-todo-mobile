@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     TouchableOpacity,
     Image,
@@ -14,8 +14,21 @@ import { format } from 'date-fns';
 import iconCalendar from '../../assets/calendar.png';
 import iconClock from '../../assets/clock.png';
 
-export default function DateTimeInput({ type, save }) {
+export default function DateTimeInput({ type, save, date, hour }) {
     const [dateTime, setDateTime] = useState();
+
+    useEffect(() => {
+        if (type == 'date' && date) {
+            setDateTime(format(new Date(date), 'dd/MM/yyyy'));
+            save(format(new Date(date), 'yyyy-MM-dd'));
+        }
+
+        if (type == 'hour' && hour){
+            setDateTime(format(new Date(hour), 'HH:mm'));
+            save(format(new Date(hour), 'HH:mm:ss'));
+        }
+
+    }, []);
 
     async function selectDataOrHour() {
         if (type == 'date') {

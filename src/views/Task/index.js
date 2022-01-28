@@ -8,7 +8,8 @@ import {
     KeyboardAvoidingView,
     TouchableOpacity,
     Switch,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import * as Network from 'expo-network';
 
@@ -22,7 +23,7 @@ import Footer from '../../components/Footer';
 import typeIcons from '../../utils/typeIcons';
 import DateTimeInput from '../../components/DateTimeInput';
 
-export default function Task({ navigation, idTask }) {
+export default function Task({ navigation }) {
     const [id, setId] = useState();
     const [done, setDone] = useState(false);
     const [type, setType] = useState();
@@ -31,6 +32,7 @@ export default function Task({ navigation, idTask }) {
     const [date, setDate] = useState();
     const [hour, setHour] = useState();
     const [macaddress, setMacaddress] = useState();
+    const [load, setLoad] = useState(true);
 
     async function New() {
 
@@ -50,17 +52,35 @@ export default function Task({ navigation, idTask }) {
             return Alert.alert('Escolha uma hora para a tarefa!');
     }
 
+    async function LoadTask() {
+        await api.get(`/task/${id}`).then(response => {
+            setLoad(true);
+            setDone(response.data.done);
+            setType(response.data.type);
+            setTitle(response.data.title);
+            setDescription(response.data.description);
+            setDate(response.data.when);
+            setHour(response.data.when);
+        });
+    }
+
     async function getMacAddress() {
         await Network.getMacAddressAsync().then(mac => {
             setMacaddress(mac);
+            setLoad(false);
         });
     }
 
     useEffect(() => {
-        if (navigation.state.params)
-            setId(navigation.state.params.idTask)
         getMacAddress();
-    });
+
+        if (navigation.state.params) {
+            setId(navigation.state.params.idTask);
+            LoadTask().then(() => setLoad(false));
+
+        }
+
+    }, [macaddress]);
 
     await api.post('/task', {
         macaddress,
@@ -75,56 +95,62 @@ export default function Task({ navigation, idTask }) {
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
             <Header showBack={true} navigation={navigation} />
-            <ScrollView style={{ width: '100%' }}>
 
-                <ScrollView horizontal={true} showHorizontalScrollIndicator={false} style={{ marginVertical: 10 }}>
-                    {
-                        typeIcons.map((icon, index) => (
-                            icon != null &&
-                            <TouchableOpacity onPress={() => setType(index)}>
-                                <Image source={icon} style={[styles.imageIcon, type && type != index && styles.typeIconInative]} />
-                            </TouchableOpacity>
-                        ))
-                    }
-                </ScrollView>
+            {
+                load
+                    ?
+                    <ActivityIndicator color='#EE6B26' size={50} styles={{ marginTop: 150 }} />
+                    :
+                    <ScrollView style={{ width: '100%' }}>
 
-                <Text style={styles.label}> Título </Text>
-                <TextInput
-                    style={styles.input}
-                    maxLength={30}
-                    placeholder="Lembre-me de fazer..."
-                    onChangeText={(text) => setTitle(text)}
-                    value={title}
-                />
+                        <ScrollView horizontal={true} showHorizontalScrollIndicator={false} style={{ marginVertical: 10 }}>
+                            {
+                                typeIcons.map((icon, index) => (
+                                    icon != null &&
+                                    <TouchableOpacity onPress={() => setType(index)}>
+                                        <Image source={icon} style={[styles.imageIcon, type && type != index && styles.typeIconInative]} />
+                                    </TouchableOpacity>
+                                ))
+                            }
+                        </ScrollView>
 
-                <Text style={styles.label}> Detalhes </Text>
-                <TextInput
-                    style={styles.inputarea}
-                    maxLength={200}
-                    multiline={true}
-                    placeholder="Detalhes das atividades que eu tenho que lembrar..."
-                    onChangeText={(text) => setDescription(text)}
-                    value={description}
-                />
+                        <Text style={styles.label}> Título </Text>
+                        <TextInput
+                            style={styles.input}
+                            maxLength={30}
+                            placeholder="Lembre-me de fazer..."
+                            onChangeText={(text) => setTitle(text)}
+                            value={title}
+                        />
 
-                <DateTimeInput type={'date'} save={setDate} />
-                <DateTimeInput type={'hour'} save={setHour} />
+                        <Text style={styles.label}> Detalhes </Text>
+                        <TextInput
+                            style={styles.inputarea}
+                            maxLength={200}
+                            multiline={true}
+                            placeholder="Detalhes das atividades que eu tenho que lembrar..."
+                            onChangeText={(text) => setDescription(text)}
+                            value={description}
+                        />
 
-                {
-                    id &&
-                    <View style={styles.inLine}>
-                        <View style={styles.inputInLine}>
-                            <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'} />
-                            <Text style={styles.switchLabel}> Concluído </Text>
-                        </View>
-                        <TouchableOpacity>
-                            <Text style={styles.removeLabel}> EXCLUÍR </Text>
-                        </TouchableOpacity>
-                    </View>
-                }
+                        <DateTimeInput type={'date'} save={setDate} date={date} />
+                        <DateTimeInput type={'hour'} save={setHour} hour={hour} />
 
-            </ScrollView>
+                        {
+                            id &&
+                            <View style={styles.inLine}>
+                                <View style={styles.inputInLine}>
+                                    <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'} />
+                                    <Text style={styles.switchLabel}> Concluído </Text>
+                                </View>
+                                <TouchableOpacity>
+                                    <Text style={styles.removeLabel}> EXCLUÍR </Text>
+                                </TouchableOpacity>
+                            </View>
+                        }
 
+                    </ScrollView>
+            }
             <Footer icon={'save'} onPress={New} />
         </KeyboardAvoidingView>
     )
