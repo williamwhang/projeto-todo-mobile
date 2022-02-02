@@ -50,29 +50,30 @@ export default function Task({ navigation }) {
 
         if (!hour)
             return Alert.alert('Escolha uma hora para a tarefa!');
+        if (id) {
+            await api.put(`/task/${id}`, {
+                macaddress,
+                done,
+                type,
+                title,
+                description,
+                when: `${date}T${hour}.000`
+            }).then(() => {
+                navigation.navigate('Home');
+            });
+        } else {
+            await api.post('/task', {
+                macaddress,
+                type,
+                title,
+                description,
+                when: `${date}T${hour}.000`
+            }).then(() => {
+                navigation.navigate('Home');
+            });
+        }
     }
-    if (id) {
-        await api.put(`/task/${id}`, {
-            macaddress,
-            done,
-            type,
-            title,
-            description,
-            when: `${date}T${hour}.000`
-        }).then(() => {
-            navigation.navigate('Home');
-        });
-    } else {
-        await api.post('/task', {
-            macaddress,
-            type,
-            title,
-            description,
-            when: `${date}T${hour}.000`
-        }).then(() => {
-            navigation.navigate('Home');
-        });
-    }
+
 
     async function LoadTask() {
         await api.get(`/task/${id}`).then(response => {
@@ -93,6 +94,24 @@ export default function Task({ navigation }) {
         });
     }
 
+    async function DeleteTask() {
+        await api.delete(`/task/${id}`).then(() => {
+            navigation.navigate('Home');
+        });
+    }
+
+    async function Remove() {
+        Alert.alert(
+            'Remover Tarefa',
+            'Deseja realmente remover essa tarefa?',
+            [
+                { text: 'Cancelar' },
+                { text: 'Confirmar', onPress: () => DeleteTask() },
+            ],
+            { cancelable: true }
+        )
+    }
+
     useEffect(() => {
         getMacAddress();
 
@@ -103,8 +122,6 @@ export default function Task({ navigation }) {
         }
 
     }, [macaddress]);
-
-
 
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -157,7 +174,7 @@ export default function Task({ navigation }) {
                                     <Switch onValueChange={() => setDone(!done)} value={done} thumbColor={done ? '#00761B' : '#EE6B26'} />
                                     <Text style={styles.switchLabel}> Concluído </Text>
                                 </View>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={Remove}>
                                     <Text style={styles.removeLabel}> EXCLUÍR </Text>
                                 </TouchableOpacity>
                             </View>
