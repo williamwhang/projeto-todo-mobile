@@ -34,7 +34,7 @@ export default function Task({ navigation }) {
     const [macaddress, setMacaddress] = useState();
     const [load, setLoad] = useState(true);
 
-    async function New() {
+    async function SaveTask() {
 
         if (!title)
             return Alert.alert('Defina o nome da tarefa!');
@@ -50,6 +50,28 @@ export default function Task({ navigation }) {
 
         if (!hour)
             return Alert.alert('Escolha uma hora para a tarefa!');
+    }
+    if (id) {
+        await api.put(`/task/${id}`, {
+            macaddress,
+            done,
+            type,
+            title,
+            description,
+            when: `${date}T${hour}.000`
+        }).then(() => {
+            navigation.navigate('Home');
+        });
+    } else {
+        await api.post('/task', {
+            macaddress,
+            type,
+            title,
+            description,
+            when: `${date}T${hour}.000`
+        }).then(() => {
+            navigation.navigate('Home');
+        });
     }
 
     async function LoadTask() {
@@ -82,15 +104,7 @@ export default function Task({ navigation }) {
 
     }, [macaddress]);
 
-    await api.post('/task', {
-        macaddress,
-        type,
-        title,
-        description,
-        when: `${date}T${hour}.000`
-    }).then(() => {
-        navigation.navigate('Home');
-    });
+
 
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -151,7 +165,7 @@ export default function Task({ navigation }) {
 
                     </ScrollView>
             }
-            <Footer icon={'save'} onPress={New} />
+            <Footer icon={'save'} onPress={SaveTask} />
         </KeyboardAvoidingView>
     )
 }

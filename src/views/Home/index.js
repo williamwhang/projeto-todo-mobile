@@ -34,7 +34,7 @@ export default function Home({ navigation }) {
     }
 
     async function lateVerify() {
-        await api.get(`/task/filter/late/11:11:11:11:11:11`)
+        await api.get(`/task/filter/late/${macaddress}`)
             .then(response => {
                 setLateCount(response.data.length)
             });
@@ -99,7 +99,7 @@ export default function Home({ navigation }) {
                         tasks.map(t =>
                         (
                             <TaskCard
-                                done={true}
+                                done={t.done}
                                 title={t.title}
                                 when={t.when}
                                 type={t.type}
