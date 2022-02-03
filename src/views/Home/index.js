@@ -61,7 +61,7 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Header showNotification={true} showBack={false} pressNotification={Notification} late={lateCount} />
+            <Header showNotification={true} showBack={false} pressNotification={Notification} late={lateCount} navigation={navigation} />
 
             <View style={styles.filter}>
                 <TouchableOpacity onPress={() => setFilter('all')}>

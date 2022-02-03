@@ -6,8 +6,10 @@
         "cancelou",
         "COLEÇÃO",
         "COMPONENTES",
+        "Conectar",
         "Confirmar",
         "confirmou",
+        "conta",
         "Defina",
         "Escolha",
         "escolher",
@@ -19,10 +21,13 @@
         "ICONES",
         "ÍCONES",
         "inputarea",
+        "Inválido",
         "lefticon",
         "lembrar",
         "Lembre",
+        "minha",
         "minuto",
+        "NOVAMENTE",
         "Organizando",
         "passada",
         "pode",
@@ -30,6 +35,7 @@
         "Semana",
         "TAREFAS",
         "tenho",
-        "Todos"
+        "Todos",
+        "Voltar"
     ]
 }
